@@ -23,13 +23,13 @@ jobs:
         uses: dawidd6/action-download-artifact@v3  # Use this instead of official for cross-workflow
         with:
           workflow: ci.yml
-          name: image-tag
+          name: ecr-info
           path: .
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read image tag
-        id: image_tag
-        run: echo "tag=latest" >> $GITHUB_OUTPUT
+      - name: Read ECR repo URL
+        id: ecr_url
+        run: echo "repo_url=$(cat ecr-url.txt)" >> $GITHUB_OUTPUT
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -54,3 +54,4 @@ jobs:
             -var="key_name=strapii-key" \
             -var="aws_region=us-east-2" \
             -var="instance_type=t2.micro" \
+            -var="ecr_repo_url=${{ steps.ecr_url.outputs.repo_url }}"

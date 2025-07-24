@@ -41,9 +41,16 @@ jobs:
       - name: Save latest tag as artifact
         run: echo "latest" > image-tag.txt
 
+      - name: Save ECR URL and image tag
+        run: |
+          echo "${{ steps.login-ecr.outputs.registry }}/strapi-ecr-repo:latest" > full-image-url.txt
+          echo "${{ steps.login-ecr.outputs.registry }}/strapi-ecr-repo" > ecr-url.txt
+
       - name: Upload image tag
         uses: actions/upload-artifact@v4
         with:
-          name: image-tag
-          path: image-tag.txt
+          name: ecr-info
+          path: |
+            full-image-url.txt
+            ecr-url.txt
           retention-days: 1
